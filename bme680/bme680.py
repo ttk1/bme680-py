@@ -112,7 +112,7 @@ class BME680:
         # t_fine = var2 + var3
         # temp_comp = ((t_fine * 5) + 128) >> 8
 
-        # 気圧のキャリブレーションのために t_fine, temp_comp を保持しておく
+        # 気圧、湿度のキャリブレーションのために t_fine, temp_comp を保持しておく
         self._t_fine = t_fine
         self._temp_comp = temp_comp
 
