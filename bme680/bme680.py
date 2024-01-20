@@ -45,8 +45,9 @@ class BME680:
         # IIR フィルタ係数を 15 (100) に設定
         self.set_config((0b000_100_0_0).to_bytes(1, "little"))
 
-        # default ctrl_meas
-        # 温度と気圧のオーバーサンプリングを x16 (101) に設定
+        # default ctrl_hum, ctrl_meas
+        # オーバーサンプリングを x16 (101) に設定
+        self.set_ctrl_hum((0b00000_101).to_bytes(1, "little"))
         self.set_ctrl_meas((0b101_101_01).to_bytes(1, "little"))
 
     def _read_data(self, addr: bytes, size: int):
@@ -68,12 +69,18 @@ class BME680:
     def set_config(self, config: bytes):
         self._config = config
 
+    def set_ctrl_hum(self, ctrl_hum: bytes):
+        self._ctrl_hum = ctrl_hum
+
     def set_ctrl_meas(self, ctrl_meas: bytes):
         self._ctrl_meas = ctrl_meas
 
     def measure(self):
         # config
         self._write_data(b"\x75", self._config)
+
+        # ctrl_hum
+        self._write_data(b"\x72", self._ctrl_hum)
 
         # ctrl_meas
         self._write_data(b"\x74", self._ctrl_meas)
