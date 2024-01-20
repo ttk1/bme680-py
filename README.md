@@ -9,6 +9,14 @@ BME680 のデータを Python で読むための何か
 ## Requirements
 
 * Python 3
+* I2C is enabled
+
+I2C は以下のコマンドで有効化できます:
+
+```sh
+sudo raspi-config
+# Interface Options -> I2C で I2C を有効化する
+```
 
 
 ## Installation
@@ -16,6 +24,7 @@ BME680 のデータを Python で読むための何か
 ```sh
 pip install git+https://github.com/ttk1/bme680-py.git
 ```
+
 
 ## Example
 
