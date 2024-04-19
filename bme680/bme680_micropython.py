@@ -68,8 +68,8 @@ class BME680:
             else:
                 # 最上位ビットが 1 の時は
                 # ビット反転させてから int.from_bytes をつかう
-                flipped_data = bytes([~e & 0xFF for e in data])
-                return -int.from_bytes(flipped_data, ENDIAN_LITTLE) - 1
+                data = bytes([~e & 0xFF for e in data])
+                return -int.from_bytes(data, ENDIAN_LITTLE) - 1
 
     def _read_int(self, addr: int, size: int, byteorder: str, signed: bool = False):
         return self._bytes_to_int(self._read_data(addr, size), byteorder, signed=signed)
