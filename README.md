@@ -2,8 +2,8 @@
 
 BME680 のデータを Python で読むための何か
 
-* 対象のセンサーモジュール: https://akizukidenshi.com/catalog/g/gK-14469/
-* BME680 のデータシート: https://akizukidenshi.com/download/ds/bosch/bme680.pdf
+* 対象のセンサーモジュール: https://akizukidenshi.com/catalog/g/g114469/
+* BME680 のデータシート: https://akizukidenshi.com/goodsaffix/bme680.pdf
 
 
 ## Requirements
