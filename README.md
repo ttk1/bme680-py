@@ -30,6 +30,9 @@ pip install git+https://github.com/ttk1/bme680-py.git
 
 https://github.com/ttk1/bme680-py/blob/main/example.py
 
+## MicroPython 向け（動作検証中）
+
+https://github.com/ttk1/bme680-py/blob/main/bme680/bme680_micropython.py
 
 ## 免責事項
 
