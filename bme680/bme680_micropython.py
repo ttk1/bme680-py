@@ -1,4 +1,4 @@
-from machine import I2C
+from machine import I2C, Pin
 import utime
 
 ENDIAN_LITTLE = "little"
@@ -10,7 +10,7 @@ class BME680:
         if i2c is not None:
             self._i2c = i2c
         else:
-            self._i2c = I2C(0)
+            self._i2c = I2C(0, scl=Pin(9), sda=Pin(8))
         self._dev_addr = dev_addr
 
         # calibration parameters
