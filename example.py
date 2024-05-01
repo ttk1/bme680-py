@@ -1,17 +1,13 @@
 import time
-import datetime
 from bme680 import BME680
 
-device = BME680()
-
-JST = datetime.timezone(datetime.timedelta(hours=9), "Asia/Tokyo")
-
-while True:
-    device.measure()
-    print("=== {} ===".format(datetime.datetime.now(JST)))
-    print(
-        "temp: {:0.2f} ℃\npress: {:0.2f} hPa\nhum: {:0.2f} %".format(
-            device.temp, device.press / 100, device.hum
+if __name__ == "__main__":
+    device = BME680()
+    while True:
+        device.measure()
+        print(
+            "temp: {:0.2f} °C\npress: {:0.2f} hPa\nhum: {:0.2f} %".format(
+                device.temp, device.press / 100, device.hum
+            )
         )
-    )
-    time.sleep(3)
+        time.sleep(3)

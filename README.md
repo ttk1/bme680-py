@@ -8,10 +8,10 @@ BME680 のデータを Python で読むための何か
 
 ## Requirements
 
-* Python 3
-* I2C is enabled
+* Python 3 or MicroPython
+* I2C
 
-I2C は以下のコマンドで有効化できます:
+Raspberry Pi の I2C は以下のコマンドで有効化できます:
 
 ```sh
 sudo raspi-config
@@ -19,20 +19,32 @@ sudo raspi-config
 ```
 
 
-## Installation
+## Installation (Python 3)
 
 ```sh
 pip install git+https://github.com/ttk1/bme680-py.git
 ```
 
 
-## Example
+## Example Usage
 
-https://github.com/ttk1/bme680-py/blob/main/example.py
+```py
+import time
+from bme680 import BME680
 
-## MicroPython 向け（動作検証中）
+if __name__ == "__main__":
+    device = BME680()
+    while True:
+        device.measure()
+        print(
+            "temp: {:0.2f} °C\npress: {:0.2f} hPa\nhum: {:0.2f} %".format(
+                device.temp, device.press / 100, device.hum
+            )
+        )
+        time.sleep(3)
 
-https://github.com/ttk1/bme680-py/blob/main/bme680/bme680_micropython.py
+```
+
 
 ## 免責事項
 
