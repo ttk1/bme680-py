@@ -10,6 +10,8 @@ BME680 のデータを Python で読むためのライブラリです。
 * Python 3 or MicroPython
 * I2C
 
+Raspberry Pi もしくは Raspberry Pi Pico での利用を想定しています。
+
 Raspberry Pi の I2C は以下のコマンドで有効化できます:
 
 ```sh
