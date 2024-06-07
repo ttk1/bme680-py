@@ -1,10 +1,9 @@
 # bme680-py
 
-BME680 のデータを Python で読むための何か
+BME680 のデータを Python で読むためのライブラリです。
 
 * 対象のセンサーモジュール: https://akizukidenshi.com/catalog/g/g114469/
 * BME680 のデータシート: https://akizukidenshi.com/goodsaffix/bme680.pdf
-
 
 ## Requirements
 
@@ -18,13 +17,20 @@ sudo raspi-config
 # Interface Options -> I2C で I2C を有効化する
 ```
 
+## Installation
 
-## Installation (Python 3)
+### Python 3
 
 ```sh
 pip install git+https://github.com/ttk1/bme680-py.git
 ```
 
+### MicroPython (mip)
+
+```py
+import mip
+mip.install("github:ttk1/bme680-py")
+```
 
 ## Example Usage
 
@@ -42,10 +48,9 @@ if __name__ == "__main__":
             )
         )
         time.sleep(3)
-
 ```
-
 
 ## 免責事項
 
-このツールを使ったことによって生じた結果について、いかなる責任も負いません。 ご使用は自己責任でお願いします。
+このツールを使ったことによって生じた結果について、いかなる責任も負いません。
+ご使用は自己責任でお願いします。
