@@ -5,6 +5,10 @@
             "github:ttk1/bme680-py/bme680/__init__.py"
         ],
         [
+            "bme680/bme680_base.py",
+            "github:ttk1/bme680-py/bme680/bme680_base.py"
+        ],
+        [
             "bme680/bme680_micropython.py",
             "github:ttk1/bme680-py/bme680/bme680_micropython.py"
         ]

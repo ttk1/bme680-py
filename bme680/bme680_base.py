@@ -1,45 +1,39 @@
-import os
-import fcntl
 import time
-from typing import Literal
+import sys
 
-I2C_SLAVE = 0x0703
+if sys.implementation.name != "micropython":
+    from typing import Literal
 
 
-class BME680:
-    def __init__(self, dev_file: str = "/dev/i2c-1", dev_addr: int = 0x77):
-        self._fd = os.open(dev_file, os.O_RDWR)
-        fcntl.ioctl(self._fd, I2C_SLAVE, dev_addr)
-
+class BME680Base:
+    def configure(self):
         # calibration parameters
-        # 値が符号付きかどうかはここを参照:
-        # https://github.com/boschsensortec/BME680_driver/blob/757e1f155c13bcdd34403579bd246b27f2963bf4/bme680.c#L719
-        self._par_t1 = self._read_int(b"\xe9", 2, "little")
-        self._par_t2 = self._read_int(b"\x8a", 2, "little", True)
-        self._par_t3 = self._read_int(b"\x8c", 1, "little", True)
+        self._par_t1 = self._read_int(0xE9, 2, "little")
+        self._par_t2 = self._read_int(0x8A, 2, "little", True)
+        self._par_t3 = self._read_int(0x8C, 1, "little", True)
 
-        self._par_p1 = self._read_int(b"\x8e", 2, "little")
-        self._par_p2 = self._read_int(b"\x90", 2, "little", True)
-        self._par_p3 = self._read_int(b"\x92", 1, "little", True)
-        self._par_p4 = self._read_int(b"\x94", 2, "little", True)
-        self._par_p5 = self._read_int(b"\x96", 2, "little", True)
-        self._par_p6 = self._read_int(b"\x99", 1, "little", True)
-        self._par_p7 = self._read_int(b"\x98", 1, "little", True)
-        self._par_p8 = self._read_int(b"\x9c", 2, "little", True)
-        self._par_p9 = self._read_int(b"\x9e", 2, "little", True)
-        self._par_p10 = self._read_int(b"\xa0", 1, "little")
+        self._par_p1 = self._read_int(0x8E, 2, "little")
+        self._par_p2 = self._read_int(0x90, 2, "little", True)
+        self._par_p3 = self._read_int(0x92, 1, "little", True)
+        self._par_p4 = self._read_int(0x94, 2, "little", True)
+        self._par_p5 = self._read_int(0x96, 2, "little", True)
+        self._par_p6 = self._read_int(0x99, 1, "little", True)
+        self._par_p7 = self._read_int(0x98, 1, "little", True)
+        self._par_p8 = self._read_int(0x9C, 2, "little", True)
+        self._par_p9 = self._read_int(0x9E, 2, "little", True)
+        self._par_p10 = self._read_int(0xA0, 1, "little")
 
-        self._par_h1 = self._read_int(b"\xe2", 2, "little") >> 4
-        self._par_h2 = self._read_int(b"\xe1", 2, "big") >> 4
-        self._par_h3 = self._read_int(b"\xe4", 1, "little", True)
-        self._par_h4 = self._read_int(b"\xe5", 1, "little", True)
-        self._par_h5 = self._read_int(b"\xe6", 1, "little", True)
-        self._par_h6 = self._read_int(b"\xe7", 1, "little")
-        self._par_h7 = self._read_int(b"\xe8", 1, "little", True)
+        self._par_h1 = self._read_int(0xE2, 2, "little") >> 4
+        self._par_h2 = self._read_int(0xE1, 2, "big") >> 4
+        self._par_h3 = self._read_int(0xE4, 1, "little", True)
+        self._par_h4 = self._read_int(0xE5, 1, "little", True)
+        self._par_h5 = self._read_int(0xE6, 1, "little", True)
+        self._par_h6 = self._read_int(0xE7, 1, "little")
+        self._par_h7 = self._read_int(0xE8, 1, "little", True)
 
-        # self._par_g1 = self._read_int(b"\xed", 1, "little", True)
-        # self._par_g2 = self._read_int(b"\xeb", 2, "little", True)
-        # self._par_g3 = self._read_int(b"\xee", 1, "little", True)
+        # self._par_g1 = self._read_int(0xED, 1, "little", True)
+        # self._par_g2 = self._read_int(0xEB, 2, "little", True)
+        # self._par_g3 = self._read_int(0xEE, 1, "little", True)
 
         # default config
         # IIR フィルタ係数を 15 (100) に設定
@@ -50,21 +44,20 @@ class BME680:
         self.set_ctrl_hum((0b00000_101).to_bytes(1, "little"))
         self.set_ctrl_meas((0b101_101_01).to_bytes(1, "little"))
 
-    def _read_data(self, addr: bytes, size: int):
-        os.write(self._fd, addr)
-        return os.read(self._fd, size)
+    def _read_data(self, addr: int, size: int):
+        raise NotImplementedError()
 
-    def _write_data(self, addr: bytes, data: bytes):
-        os.write(self._fd, addr + data)
+    def _write_data(self, addr: int, data: bytes):
+        raise NotImplementedError()
 
     def _read_int(
         self,
-        addr: bytes,
+        addr: int,
         size: int,
-        byteorder: Literal["little", "big"],
+        byteorder,  # type: Literal["little", "big"]
         signed: bool = False,
     ):
-        return int.from_bytes(self._read_data(addr, size), byteorder, signed=signed)
+        raise NotImplementedError()
 
     def set_config(self, config: bytes):
         self._config = config
@@ -77,18 +70,18 @@ class BME680:
 
     def measure(self):
         # config
-        self._write_data(b"\x75", self._config)
+        self._write_data(0x75, self._config)
 
         # ctrl_hum
-        self._write_data(b"\x72", self._ctrl_hum)
+        self._write_data(0x72, self._ctrl_hum)
 
         # ctrl_meas
-        self._write_data(b"\x74", self._ctrl_meas)
+        self._write_data(0x74, self._ctrl_meas)
 
         # 計測が終わるまで待つ
         while True:
             time.sleep(0.01)
-            meas_status_0 = self._read_int(b"\x1d", 1, "little")
+            meas_status_0 = self._read_int(0x1D, 1, "little")
             new_data_0 = (meas_status_0 & 0b1000_0000) > 0
             measuring = (meas_status_0 & 0b0010_0000) > 0
             if new_data_0 == True and measuring == False:
@@ -99,7 +92,7 @@ class BME680:
         self.hum = self._read_hum()
 
     def _read_temp(self):
-        temp_adc = self._read_int(b"\x22", 3, "big") >> 4
+        temp_adc = self._read_int(0x22, 3, "big") >> 4
 
         # Floating point:
         var1 = (temp_adc / 16384 - self._par_t1 / 1024) * self._par_t2
@@ -126,7 +119,7 @@ class BME680:
         return temp_comp
 
     def _read_press(self):
-        press_adc = self._read_int(b"\x1f", 3, "big") >> 4
+        press_adc = self._read_int(0x1F, 3, "big") >> 4
 
         # Floating point:
         var1 = self._t_fine / 2 - 64000
@@ -173,7 +166,7 @@ class BME680:
         return press_comp
 
     def _read_hum(self):
-        hum_adc = self._read_int(b"\x25", 2, "big")
+        hum_adc = self._read_int(0x25, 2, "big")
 
         # Floating point:
         var1 = hum_adc - (self._par_h1 * 16 + (self._par_h3 / 2) * self._temp_comp)
